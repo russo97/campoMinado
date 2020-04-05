@@ -1,13 +1,36 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@import "./reset.css";
+
+
+html, body {
+  width: 100%;
+  height: 100%;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+body {
+  display: flex;
+  flex-grow: row wrap;
+  align-items: center;
+  justify-content: center;
+}
+
+body #container {
+  width: 600px;
+  height: 420px;
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  justify-content: center;
+  background-color: #f5f6f8;
+}
+
+#container #gameContainer {
+  width: 70%;
+  height: 100%;
+  background-color: red;
+}
+
+#container #menuContainer {
+  width: 30%;
+  height: 100%;
+  background-color: blue;
 }
