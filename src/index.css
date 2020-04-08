@@ -23,13 +23,14 @@ body #container {
   width: 600px;
   height: 420px;
   display: flex;
+  min-width: 600px;
   flex-flow: row wrap;
   align-items: center;
   justify-content: center;
   background-color: #f5f6f8;
 }
 
-#container #gameContainer {
+#container > #gameContainer {
   width: 70%;
   height: 100%;
   display: flex;
@@ -38,24 +39,27 @@ body #container {
 }
 
 #gameContainer .box {
-  --shape: 10;
-
   width: 96%;
   height: 96%;
   display: grid;
   grid-gap: 1px;
+  position: relative;
   grid-template-columns: repeat(var(--shape), 1fr);
 }
 
 #gameContainer .box > * {
+  color: green;
   cursor: pointer;
-  transition: all 200ms ease;
+  font-weight: bold;
+  text-align: center;
+  /* transition: all 200ms ease; */
   -webkit-border-radius: 2px;
      -moz-border-radius: 2px;
       -ms-border-radius: 2px;
        -o-border-radius: 2px;
           border-radius: 2px;
   background-color: #c0c0c0;
+  font-family: 'Consolas', sans-serif;
 }
 
 #container #menuContainer {
