@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
 
+import Tile from './components/Tile';
+
 function App () {
   const gridSize = [8, 12, 15];
   const [level, setLevel] = useState(0);
   const [tiles, setTiles] = useState([]);
+  const [playing, setPlaying] = useState(false);
 
   useEffect(() => {
     setVirginTiles();
@@ -17,7 +20,10 @@ function App () {
     let currentGridSize = gridSize[level];
 
     let placeholderTiles = Array.from({ length: currentGridSize ** 2 }, (_, index) => {
-      return ({ index });
+      return ({
+        index,
+        bombCount: 0
+      });
     });
 
     setTiles(placeholderTiles);
@@ -32,16 +38,42 @@ function App () {
     );
   }
 
+  function playGame () {
+    setPlaying(!playing);
+  }
+
   function random (min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min);
   }
 
   function setMutualCSSProperties (element, props) {
     for (let index = 0, len = props.length; index < len; index++) {
-      let current = props[index];
+      let { propName, propValue } = props[index];
 
-      element.style.setProperty(current.propName, current.propValue);
+      element.style.setProperty(propName, propValue);
     }
+  }
+
+  function changeDifficult () {
+    let nextLevel = level + 1;
+
+    let switchLevel = nextLevel > gridSize.length - 1
+      ? 0
+      : nextLevel;
+
+    setLevel(switchLevel);
+  }
+
+  function tileReceivedLeftClick (e) {
+    e.preventDefault();
+
+    console.log('botão esquedo clicou');
+  }
+
+  function tileReceivedRightClick (e) {
+    e.preventDefault();
+
+    console.log('botão direito clicou');
   }
 
   return (
@@ -49,7 +81,15 @@ function App () {
       <div id="gameContainer">
         <div className="box">
           {
-            tiles.map(e => <div key={e.index}> { random(1, 8) } </div>)
+            tiles.map((eachTile) => {
+              let { index, bombCount } = eachTile;
+
+              return (
+                <Tile key={index}
+                      leftClick={tileReceivedLeftClick}
+                      rightClick={tileReceivedRightClick}> { bombCount } </Tile>
+              );
+            })
           }
         </div>
       </div>
@@ -61,9 +101,9 @@ function App () {
         </div>
 
         <div className="gameControls">
-          <div className="gameControlButton">Play</div>
+          <div className="gameControlButton" onClick={() => playGame()}> { playing ? 'Restart Game' : 'Play' } </div>
           <div className="gameControlButton">Melhores Tempos</div>
-          <div className="gameControlButton" onClick={e => setLevel(level + 1 > gridSize.length - 1 ? 0 : level + 1)}>Alterar Dificuldade</div>
+          <div className="gameControlButton" onClick={e => changeDifficult()}>Alterar Dificuldade</div>
         </div>
       </div>
     </div>
