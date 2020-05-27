@@ -20,14 +20,16 @@ function App () {
   }, []); // happens once time when its loaded
 
   function setVirginTiles () {
-    let currentGridSize = gridSize[level];
+    let currentGridSize = gridSize[level], arraySize = { length: currentGridSize };
 
-    let placeholderTiles = Array.from({ length: currentGridSize ** 2 }, (_, index) => {
-      return ({
-        index,
-        bombCount: 0,
-        covered: true,
-        isABomb: false,
+    let placeholderTiles = Array.from(arraySize, (_, yIndex) => {
+      return Array.from(arraySize, (__, xIndex) => {
+        return ({
+          bombsCount: 0,
+          covered: true,
+          isABomb: false,
+          index: yIndex * currentGridSize + xIndex,
+        });
       });
     });
 
@@ -60,7 +62,6 @@ function App () {
   }
 
 
-
   function changeDifficult () {
     let nextLevel = level + 1;
 
@@ -90,15 +91,17 @@ function App () {
       <div id="gameContainer">
         <div className="box">
           {
-            tiles.map((eachTile) => {
-              let { index, bombCount } = eachTile;
+            tiles.map((row) =>
+              row.map(cell => {
+                let { index, bombCount, covered } = cell;
 
-              return (
-                <Tile key={index}
-                      leftClick={tileReceivedLeftClick}
-                      rightClick={tileReceivedRightClick} />
-              );
-            })
+                return (
+                  <Tile key={index}
+                        leftClick={tileReceivedLeftClick}
+                        rightClick={tileReceivedRightClick}> { index } </Tile>
+                );
+              })
+            )
           }
         </div>
       </div>

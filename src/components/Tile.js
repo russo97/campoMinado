@@ -8,7 +8,7 @@ function Tile ({ children, leftClick, rightClick, covered }) {
       className="tile"
       onClick={ e => leftClick(e) }
       onContextMenu={ e => rightClick(e) }>
-        { covered && children  }
+        { covered ? '' : children  }
     </div>
   );
 }
