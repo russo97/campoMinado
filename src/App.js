@@ -9,7 +9,7 @@ function App () {
   const [level, setLevel] = useState(0);
   const [tiles, setTiles] = useState([]);
   const [playing, setPlaying] = useState(false);
-  const [bombsCount, setBombsCount] = useState(0);
+  const [bombsCount, setBombsCount] = useState(gridSize[level]);
 
   useEffect(() => {
     setVirginTiles();
@@ -20,24 +20,34 @@ function App () {
   }, []); // happens once time when its loaded
 
   function setVirginTiles () {
-    let currentGridSize = gridSize[level], arraySize = { length: currentGridSize };
+    let currentGridSize = gridSize[level], arraySize = { length: currentGridSize }, bCount = Math.floor((currentGridSize ** 2) * .40);
 
-    let placeholderTiles = Array.from(arraySize, (_, yIndex) => {
-      return Array.from(arraySize, (__, xIndex) => {
-        return ({
+    let placeholderTiles = Array.from(arraySize, (_, yIndex) =>
+      Array.from(arraySize, (__, xIndex) => ({
           bombsCount: 0,
           covered: true,
           isABomb: false,
-          index: yIndex * currentGridSize + xIndex,
-        });
-      });
-    });
+          xIndex, yIndex,
+          index: yIndex * currentGridSize + xIndex
+        })
+      )
+    );
+    
+    while (bCount > howManyBombsExists(placeholderTiles)) {
+      let x = random(0, currentGridSize - 1);
+      let y = random(0, currentGridSize - 1);
 
+      let tile = placeholderTiles[y][x];
+
+      if (!tile.isABomb) tile.isABomb = true;
+    }
+
+    console.log(placeholderTiles);
+    
+    setBombsCount(bCount);
     setTiles(placeholderTiles);
     
     playing && setPlaying(false);
-
-    setBombsCount(Math.floor((currentGridSize ** 2) * .40));
 
     setMutualCSSProperties(
       document.querySelector('#gameContainer > .box'),
@@ -47,6 +57,10 @@ function App () {
         { propName: 'line-height', propValue: `${[50, 33, 26][level]}px` }
       ]
     );
+  }
+
+  function howManyBombsExists (tileSet) {
+    return tileSet.reduce((acc, cur, i) => acc + cur.filter(tile => tile.isABomb).length, 0);
   }
 
   function playGame () {
@@ -73,17 +87,19 @@ function App () {
   }
 
   function tileReceivedLeftClick (e) {
-    e.preventDefault();
+    let { event, xIndex, yIndex } = e;
 
-    console.log('botão esquedo clicou');
+    event.preventDefault();
+
+    console.log(`x: ${xIndex} y: ${yIndex}`);
   }
 
   function tileReceivedRightClick (e) {
-    e.preventDefault();
+    let { event, xIndex, yIndex } = e;
 
-    console.log(e);
+    event.preventDefault();
 
-    console.log('botão direito clicou');
+    console.log(`x: ${xIndex} y: ${yIndex}`);
   }
 
   return (
@@ -93,10 +109,13 @@ function App () {
           {
             tiles.map((row) =>
               row.map(cell => {
-                let { index, bombCount, covered } = cell;
+                let { index, covered, xIndex, yIndex } = cell;
 
                 return (
                   <Tile key={index}
+                        xIndex={xIndex}
+                        yIndex={yIndex}
+                        covered={covered}
                         leftClick={tileReceivedLeftClick}
                         rightClick={tileReceivedRightClick}> { index } </Tile>
                 );
